@@ -10,19 +10,10 @@ import { Exam } from '../../../core/models/exam.models';
   imports: [CommonModule],
   template: `
     <div class="exam-details-container">
-      <!-- Header -->
-      <header class="page-header">
-        <button (click)="goBack()" class="back-btn">
-          <i class="icon">←</i>
-          العودة
-        </button>
-        <h1>تفاصيل الامتحان</h1>
-      </header>
-
       <!-- Loading State -->
       <div class="loading-state" *ngIf="isLoading()">
         <div class="spinner"></div>
-        <p>جاري تحميل تفاصيل الامتحان...</p>
+        <p>Loading exam details...</p>
       </div>
 
       <!-- Exam Details -->
@@ -31,28 +22,28 @@ import { Exam } from '../../../core/models/exam.models';
           <div class="exam-header">
             <h2>{{ exam()?.title }}</h2>
             <div class="exam-badges">
-              <span class="duration-badge">{{ exam()?.duration }} دقيقة</span>
-              <span class="questions-badge">{{ exam()?.questions?.length || 0 }} سؤال</span>
+              <span class="duration-badge">{{ exam()?.duration }} minutes</span>
+              <span class="questions-badge">{{ exam()?.questions?.length || 0 }} questions</span>
             </div>
           </div>
 
           <div class="exam-description" *ngIf="exam()?.description">
-            <h3>وصف الامتحان</h3>
+            <h3>Exam Description</h3>
             <p>{{ exam()?.description }}</p>
           </div>
 
           <div class="exam-stats">
             <div class="stat-item">
-              <span class="stat-label">مدة الامتحان:</span>
-              <span class="stat-value">{{ exam()?.duration }} دقيقة</span>
+              <span class="stat-label">Duration:</span>
+              <span class="stat-value">{{ exam()?.duration }} minutes</span>
             </div>
             <div class="stat-item">
-              <span class="stat-label">عدد الأسئلة:</span>
-              <span class="stat-value">{{ exam()?.questions?.length || 0 }} سؤال</span>
+              <span class="stat-label">Number of Questions:</span>
+              <span class="stat-value">{{ exam()?.questions?.length || 0 }} questions</span>
             </div>
             <div class="stat-item">
-              <span class="stat-label">إجمالي النقاط:</span>
-              <span class="stat-value">{{ totalPoints() }} نقطة</span>
+              <span class="stat-label">Total Points:</span>
+              <span class="stat-value">{{ totalPoints() }} points</span>
             </div>
           </div>
 
@@ -60,19 +51,19 @@ import { Exam } from '../../../core/models/exam.models';
             <button (click)="startExam()" class="start-exam-btn" [disabled]="isStarting()">
               <i class="icon" *ngIf="!isStarting()">🚀</i>
               <div class="mini-spinner" *ngIf="isStarting()"></div>
-              {{ isStarting() ? 'جاري البدء...' : 'بدء الامتحان' }}
+              {{ isStarting() ? 'Starting...' : 'Start Exam' }}
             </button>
           </div>
         </div>
 
         <!-- Questions Preview -->
         <div class="questions-preview" *ngIf="exam()?.questions && exam()?.questions!.length > 0">
-          <h3>معاينة الأسئلة</h3>
+          <h3>Questions Preview</h3>
           <div class="questions-list">
             <div class="question-item" *ngFor="let question of exam()?.questions; let i = index">
               <div class="question-header">
-                <span class="question-number">السؤال {{ i + 1 }}</span>
-                <span class="question-points">{{ question.points }} نقطة</span>
+                <span class="question-number">Question {{ i + 1 }}</span>
+                <span class="question-points">{{ question.points }} points</span>
                 <span class="question-type" [ngClass]="getQuestionTypeClass(question.question_type)">
                   {{ getQuestionTypeLabel(question.question_type) }}
                 </span>
@@ -90,18 +81,18 @@ import { Exam } from '../../../core/models/exam.models';
               <!-- True/False Preview -->
               <div class="choices-preview" *ngIf="question.question_type === 'true_false'">
                 <div class="choice-item">
-                  <span class="choice-letter">أ</span>
-                  <span class="choice-text">صحيح</span>
+                  <span class="choice-letter">A</span>
+                  <span class="choice-text">True</span>
                 </div>
                 <div class="choice-item">
-                  <span class="choice-letter">ب</span>
-                  <span class="choice-text">خطأ</span>
+                  <span class="choice-letter">B</span>
+                  <span class="choice-text">False</span>
                 </div>
               </div>
 
               <!-- Essay Preview -->
               <div class="essay-preview" *ngIf="question.question_type === 'essay'">
-                <p class="essay-note">سؤال مقالي - يتطلب إجابة مكتوبة</p>
+                <p class="essay-note">Essay question - requires written answer</p>
               </div>
             </div>
           </div>
@@ -109,13 +100,13 @@ import { Exam } from '../../../core/models/exam.models';
 
         <!-- Instructions -->
         <div class="exam-instructions">
-          <h3>تعليمات الامتحان</h3>
+          <h3>Exam Instructions</h3>
           <ul>
-            <li>تأكد من اتصالك بالإنترنت قبل بدء الامتحان</li>
-            <li>لديك {{ exam()?.duration }} دقيقة لإكمال الامتحان</li>
-            <li>لا يمكنك العودة للأسئلة السابقة بعد الانتقال للسؤال التالي</li>
-            <li>تأكد من حفظ إجاباتك قبل انتهاء الوقت</li>
-            <li>سيتم إرسال الامتحان تلقائياً عند انتهاء الوقت المحدد</li>
+            <li>Ensure you are connected to the internet before starting the exam.</li>
+            <li>You have {{ exam()?.duration }} minutes to complete the exam.</li>
+            <li>You cannot go back to previous questions after moving to the next.</li>
+            <li>Make sure to save your answers before time runs out.</li>
+            <li>The exam will be submitted automatically when the time limit expires.</li>
           </ul>
         </div>
       </div>
@@ -123,55 +114,21 @@ import { Exam } from '../../../core/models/exam.models';
       <!-- Error State -->
       <div class="error-state" *ngIf="!isLoading() && !exam()">
         <div class="error-icon">⚠️</div>
-        <h3>لم يتم العثور على الامتحان</h3>
-        <p>الامتحان المطلوب غير متاح أو تم حذفه</p>
-        <button (click)="goBack()" class="back-btn">العودة للوحة التحكم</button>
+        <h3>Exam Not Found</h3>
+        <p>The requested exam is not available or has been deleted.</p>
+        <button (click)="goBack()" class="back-btn">Back to Dashboard</button>
       </div>
     </div>
   `,
   styles: [`
     .exam-details-container {
       min-height: 100vh;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      direction: rtl;
+      background: linear-gradient(135deg, #f7fafc 0%, #e2e8f0 100%);
+      direction: ltr;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    .page-header {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      padding: 20px;
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .back-btn {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: 500;
-      transition: all 0.3s ease;
-    }
-
-    .back-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-    }
-
-    .page-header h1 {
-      margin: 0;
-      color: #2d3748;
-      font-size: 1.8rem;
-      font-weight: 700;
-    }
+    /* Removed page-header styles as it's now in app.component.ts */
 
     .exam-details-content {
       max-width: 1000px;
@@ -180,8 +137,7 @@ import { Exam } from '../../../core/models/exam.models';
     }
 
     .exam-info-card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
+      background: white;
       border-radius: 16px;
       padding: 30px;
       margin-bottom: 30px;
@@ -235,7 +191,7 @@ import { Exam } from '../../../core/models/exam.models';
       padding: 20px;
       background: #f7fafc;
       border-radius: 12px;
-      border-right: 4px solid #667eea;
+      border-left: 4px solid #667eea; /* Changed to border-left for LTR */
     }
 
     .exam-description h3 {
@@ -312,8 +268,7 @@ import { Exam } from '../../../core/models/exam.models';
     }
 
     .questions-preview {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
+      background: white;
       border-radius: 16px;
       padding: 30px;
       margin-bottom: 30px;
@@ -454,8 +409,7 @@ import { Exam } from '../../../core/models/exam.models';
     }
 
     .exam-instructions {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
+      background: white;
       border-radius: 16px;
       padding: 30px;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
@@ -471,7 +425,7 @@ import { Exam } from '../../../core/models/exam.models';
 
     .exam-instructions ul {
       margin: 0;
-      padding-right: 20px;
+      padding-left: 20px; /* Changed to padding-left for LTR */
       color: #4a5568;
       line-height: 1.8;
     }
@@ -487,14 +441,14 @@ import { Exam } from '../../../core/models/exam.models';
       justify-content: center;
       min-height: 400px;
       text-align: center;
-      color: white;
+      color: #4a5568; /* Changed text color for lighter background */
     }
 
     .spinner, .mini-spinner {
       width: 40px;
       height: 40px;
-      border: 4px solid rgba(255, 255, 255, 0.3);
-      border-top: 4px solid white;
+      border: 4px solid #e2e8f0;
+      border-top: 4px solid #667eea;
       border-radius: 50%;
       animation: spin 1s linear infinite;
       margin-bottom: 20px;
@@ -598,7 +552,7 @@ export class ExamDetailsComponent implements OnInit {
     const examData = this.exam();
     if (!examData) return;
 
-    if (confirm(`هل أنت متأكد من بدء امتحان "${examData.title}"؟\n\nلن تتمكن من العودة بعد البدء.`)) {
+    if (confirm(`Are you sure you want to start the exam "${examData.title}"?\n\nYou will not be able to go back after starting.`)) {
       this.isStarting.set(true);
 
       this.examService.startExam(examData.id).subscribe({
@@ -607,7 +561,7 @@ export class ExamDetailsComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error starting exam:', error);
-          alert('حدث خطأ أثناء بدء الامتحان. يرجى المحاولة مرة أخرى.');
+          alert('An error occurred while starting the exam. Please try again.');
           this.isStarting.set(false);
         }
       });
@@ -620,9 +574,9 @@ export class ExamDetailsComponent implements OnInit {
 
   getQuestionTypeLabel(type: string): string {
     switch (type) {
-      case 'multiple_choice': return 'اختيار متعدد';
-      case 'true_false': return 'صح أم خطأ';
-      case 'essay': return 'مقالي';
+      case 'multiple_choice': return 'Multiple Choice';
+      case 'true_false': return 'True/False';
+      case 'essay': return 'Essay';
       default: return type;
     }
   }
@@ -632,7 +586,7 @@ export class ExamDetailsComponent implements OnInit {
   }
 
   getChoiceLetter(index: number): string {
-    const letters = ['أ', 'ب', 'ج', 'د', 'هـ', 'و', 'ز', 'ح'];
+    const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
     return letters[index] || String(index + 1);
   }
 }

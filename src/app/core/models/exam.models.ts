@@ -1,62 +1,57 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
-import { AuthService } from './core/services/auth.service';
-import { StudentSidebarComponent } from './features/student/student-sidebar/student-sidebar.component';
+export interface Exam {
+  id: number;
+  title: string;
+  description?: string;
+  duration: number; // in minutes
+  questions_count?: number;
+  created_at: string;
+  updated_at: string;
+  questions?: Question[];
+}
 
-@Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterOutlet,
-    StudentSidebarComponent
-  ],
-  template: `
-    <div class="app-container">
-      <app-student-sidebar *ngIf="authService.isStudent()"></app-student-sidebar>
-      <div class="main-content" [class.expanded]="!authService.isStudent()">
-        <router-outlet></router-outlet>
-      </div>
-    </div>
-  `,
-  styles: [`
-    .app-container {
-      display: flex;
-      min-height: 100vh;
-    }
+export interface Question {
+  id: number;
+  exam_id: number;
+  question_text: string;
+  question_type: 'multiple_choice' | 'true_false' | 'essay';
+  points: number;
+  created_at: string;
+  updated_at: string;
+  choices?: Choice[];
+}
 
-    .main-content {
-      flex-grow: 1;
-      margin-left: 250px; /* Adjust based on sidebar width */
-      transition: margin-left 0.3s ease;
-    }
+export interface Choice {
+  id: number;
+  question_id: number;
+  choice_text: string;
+  is_correct: boolean;
+  created_at: string;
+  updated_at: string;
+}
 
-    .main-content.expanded {
-      margin-left: 0;
-    }
+export interface ExamAttempt {
+  id: number;
+  exam_id: number;
+  user_id: number;
+  started_at: string;
+  submitted_at?: string;
+  score?: number;
+  answers?: ExamAnswer[];
+  created_at: string;
+  updated_at: string;
+  exam?: Exam;
+}
 
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-      .app-container {
-        flex-direction: column;
-      }
+export interface ExamAnswer {
+  question_id: number;
+  answer_value?: any; // Can be choice_id, boolean, or text
+  selected_choice_id?: number;
+  answer_text?: string;
+}
 
-      app-student-sidebar {
-        position: relative;
-        width: 100%;
-        height: auto;
-        box-shadow: none;
-      }
-
-      .main-content {
-        margin-left: 0;
-      }
-    }
-  `]
-})
-export class AppComponent {
-  readonly authService = inject(AuthService);
+export interface StartExamResponse {
+  exam_attempt: ExamAttempt;
+  exam: Exam;
 }
 
 

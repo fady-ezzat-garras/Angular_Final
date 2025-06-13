@@ -13,15 +13,15 @@ import { ExamAttempt } from '../../../core/models/exam.models';
       <!-- Header -->
       <header class="result-header">
         <div class="header-content">
-          <h1>نتيجة الامتحان</h1>
-          <p class="header-subtitle">تم إكمال الامتحان بنجاح</p>
+          <h1>Exam Result</h1>
+          <p class="header-subtitle">Exam completed successfully</p>
         </div>
       </header>
 
       <!-- Loading State -->
       <div class="loading-state" *ngIf="isLoading()">
         <div class="spinner"></div>
-        <p>جاري تحميل النتيجة...</p>
+        <p>Loading result...</p>
       </div>
 
       <!-- Result Content -->
@@ -36,7 +36,7 @@ import { ExamAttempt } from '../../../core/models/exam.models';
                 {{ examAttempt()?.score }}%
               </span>
               <span class="score-value pending" *ngIf="examAttempt()?.score === null">
-                معلق
+                Pending
               </span>
               <span class="score-status">{{ getScoreStatus(examAttempt()?.score) }}</span>
             </div>
@@ -45,30 +45,30 @@ import { ExamAttempt } from '../../../core/models/exam.models';
 
         <!-- Exam Details -->
         <div class="details-section">
-          <h3>تفاصيل الامتحان</h3>
+          <h3>Exam Details</h3>
           <div class="details-grid">
             <div class="detail-item">
-              <span class="detail-label">تاريخ البدء:</span>
+              <span class="detail-label">Start Date:</span>
               <span class="detail-value">{{ formatDate(examAttempt()?.started_at) }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">تاريخ الانتهاء:</span>
+              <span class="detail-label">End Date:</span>
               <span class="detail-value">{{ formatDate(examAttempt()?.submitted_at) }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">مدة الامتحان:</span>
+              <span class="detail-label">Duration:</span>
               <span class="detail-value">{{ calculateDuration() }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">عدد الأسئلة:</span>
-              <span class="detail-value">{{ examAttempt()?.exam?.questions?.length || 0 }} سؤال</span>
+              <span class="detail-label">Number of Questions:</span>
+              <span class="detail-value">{{ examAttempt()?.exam?.questions?.length || 0 }} questions</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">الأسئلة المجابة:</span>
-              <span class="detail-value">{{ answeredQuestions() }} سؤال</span>
+              <span class="detail-label">Answered Questions:</span>
+              <span class="detail-value">{{ answeredQuestions() }} questions</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">معدل الإجابة:</span>
+              <span class="detail-label">Answer Rate:</span>
               <span class="detail-value">{{ answerRate() }}%</span>
             </div>
           </div>
@@ -76,7 +76,7 @@ import { ExamAttempt } from '../../../core/models/exam.models';
 
         <!-- Performance Analysis -->
         <div class="analysis-section" *ngIf="examAttempt()?.score !== null">
-          <h3>تحليل الأداء</h3>
+          <h3>Performance Analysis</h3>
           <div class="performance-chart">
             <div class="performance-bar">
               <div class="performance-fill" [style.width.%]="examAttempt()?.score"></div>
@@ -104,10 +104,10 @@ import { ExamAttempt } from '../../../core/models/exam.models';
         <!-- Pending Result Message -->
         <div class="pending-section" *ngIf="examAttempt()?.score === null">
           <div class="pending-icon">⏳</div>
-          <h3>النتيجة قيد المراجعة</h3>
-          <p>تم استلام إجاباتك بنجاح. سيتم مراجعة الامتحان وإعلان النتيجة قريباً.</p>
+          <h3>Result Pending</h3>
+          <p>Your answers have been successfully received. The exam will be reviewed and results will be announced soon.</p>
           <div class="pending-note">
-            <p><strong>ملاحظة:</strong> قد تستغرق عملية التصحيح بعض الوقت خاصة للأسئلة المقالية.</p>
+            <p><strong>Note:</strong> Grading may take some time, especially for essay questions.</p>
           </div>
         </div>
 
@@ -115,21 +115,21 @@ import { ExamAttempt } from '../../../core/models/exam.models';
         <div class="actions-section">
           <button (click)="goToDashboard()" class="action-btn primary">
             <i class="icon">🏠</i>
-            العودة للوحة التحكم
+            Back to Dashboard
           </button>
           <button (click)="viewAllResults()" class="action-btn secondary">
             <i class="icon">📊</i>
-            عرض جميع النتائج
+            View All Results
           </button>
           <button (click)="retakeExam()" class="action-btn tertiary" *ngIf="canRetakeExam()">
             <i class="icon">🔄</i>
-            إعادة الامتحان
+            Retake Exam
           </button>
         </div>
 
         <!-- Tips Section -->
         <div class="tips-section">
-          <h3>نصائح للتحسين</h3>
+          <h3>Tips for Improvement</h3>
           <div class="tips-list">
             <div class="tip-item" *ngFor="let tip of getImprovementTips()">
               <div class="tip-icon">💡</div>
@@ -142,23 +142,22 @@ import { ExamAttempt } from '../../../core/models/exam.models';
       <!-- Error State -->
       <div class="error-state" *ngIf="!isLoading() && !examAttempt()">
         <div class="error-icon">⚠️</div>
-        <h3>لم يتم العثور على النتيجة</h3>
-        <p>النتيجة المطلوبة غير متاحة أو تم حذفها</p>
-        <button (click)="goToDashboard()" class="action-btn primary">العودة للوحة التحكم</button>
+        <h3>Result Not Found</h3>
+        <p>The requested result is not available or has been deleted.</p>
+        <button (click)="goToDashboard()" class="action-btn primary">Back to Dashboard</button>
       </div>
     </div>
   `,
   styles: [`
     .result-container {
       min-height: 100vh;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      direction: rtl;
+      background: linear-gradient(135deg, #f7fafc 0%, #e2e8f0 100%); /* Lighter background */
+      direction: ltr; /* Changed to LTR */
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     .result-header {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
+      background: white;
       padding: 30px 20px;
       text-align: center;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -184,8 +183,7 @@ import { ExamAttempt } from '../../../core/models/exam.models';
     }
 
     .score-card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
+      background: white;
       border-radius: 20px;
       padding: 40px;
       margin-bottom: 30px;
@@ -267,8 +265,7 @@ import { ExamAttempt } from '../../../core/models/exam.models';
     }
 
     .details-section, .analysis-section, .pending-section, .tips-section {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
+      background: white;
       border-radius: 16px;
       padding: 30px;
       margin-bottom: 30px;
@@ -504,14 +501,14 @@ import { ExamAttempt } from '../../../core/models/exam.models';
       justify-content: center;
       min-height: 400px;
       text-align: center;
-      color: white;
+      color: #4a5568; /* Changed text color for lighter background */
     }
 
     .spinner {
       width: 50px;
       height: 50px;
-      border: 5px solid rgba(255, 255, 255, 0.3);
-      border-top: 5px solid white;
+      border: 5px solid #e2e8f0;
+      border-top: 5px solid #667eea;
       border-radius: 50%;
       animation: spin 1s linear infinite;
       margin-bottom: 20px;
@@ -615,37 +612,30 @@ export class ExamResultComponent implements OnInit {
     });
   }
 
-  calculateDuration(): string {
-    const attempt = this.examAttempt();
-    if (!attempt?.started_at || !attempt?.submitted_at) {
-      return 'غير محدد';
-    }
-
-    const start = new Date(attempt.started_at);
-    const end = new Date(attempt.submitted_at);
-    const diffMs = end.getTime() - start.getTime();
-    const diffMins = Math.round(diffMs / (1000 * 60));
-
-    const hours = Math.floor(diffMins / 60);
-    const minutes = diffMins % 60;
-
-    if (hours > 0) {
-      return `${hours} ساعة و ${minutes} دقيقة`;
-    }
-    return `${minutes} دقيقة`;
-  }
-
   formatDate(dateString: string | undefined): string {
-    if (!dateString) return 'غير محدد';
-
+    if (!dateString) return 'N/A';
     const date = new Date(dateString);
-    return date.toLocaleDateString('ar-EG', {
+    return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
     });
+  }
+
+  calculateDuration(): string {
+    const attempt = this.examAttempt();
+    if (!attempt || !attempt.started_at || !attempt.submitted_at) return 'N/A';
+
+    const start = new Date(attempt.started_at).getTime();
+    const end = new Date(attempt.submitted_at).getTime();
+    const diffSeconds = Math.round((end - start) / 1000);
+
+    const minutes = Math.floor(diffSeconds / 60);
+    const seconds = diffSeconds % 60;
+
+    return `${minutes}m ${seconds}s`;
   }
 
   getScoreClass(score: number | null | undefined): string {
@@ -659,100 +649,63 @@ export class ExamResultComponent implements OnInit {
   getScoreIcon(score: number | null | undefined): string {
     if (score === null || score === undefined) return '⏳';
     if (score >= 90) return '🏆';
-    if (score >= 80) return '🎉';
-    if (score >= 60) return '👍';
-    return '📚';
+    if (score >= 80) return '👍';
+    if (score >= 60) return '🤔';
+    return '👎';
   }
 
   getScoreStatus(score: number | null | undefined): string {
-    if (score === null || score === undefined) return 'في انتظار التصحيح';
-    if (score >= 90) return 'ممتاز';
-    if (score >= 80) return 'جيد جداً';
-    if (score >= 60) return 'جيد';
-    return 'يحتاج تحسين';
+    if (score === null || score === undefined) return 'Pending';
+    if (score >= 90) return 'Excellent';
+    if (score >= 80) return 'Very Good';
+    if (score >= 60) return 'Good';
+    return 'Needs Improvement';
   }
 
   getFeedbackClass(score: number | null | undefined): string {
-    return this.getScoreClass(score);
+    if (score === null || score === undefined) return 'pending';
+    if (score >= 90) return 'excellent';
+    if (score >= 80) return 'good';
+    if (score >= 60) return 'average';
+    return 'poor';
   }
 
   getFeedbackIcon(score: number | null | undefined): string {
-    return this.getScoreIcon(score);
+    if (score === null || score === undefined) return '⏳';
+    if (score >= 90) return '🌟';
+    if (score >= 80) return '✅';
+    if (score >= 60) return '💡';
+    return '⚠️';
   }
 
   getFeedbackTitle(score: number | null | undefined): string {
-    if (score === null || score === undefined) return 'نتيجة معلقة';
-    if (score >= 90) return 'أداء ممتاز!';
-    if (score >= 80) return 'أداء جيد جداً!';
-    if (score >= 60) return 'أداء جيد';
-    return 'يمكن التحسين';
+    if (score === null || score === undefined) return 'Result Pending';
+    if (score >= 90) return 'Outstanding Performance!';
+    if (score >= 80) return 'Great Job!';
+    if (score >= 60) return 'Good Effort!';
+    return 'Needs More Practice';
   }
 
   getFeedbackMessage(score: number | null | undefined): string {
-    if (score === null || score === undefined) {
-      return 'تم استلام إجاباتك وسيتم مراجعتها قريباً.';
-    }
-    if (score >= 90) {
-      return 'تهانينا! لقد حققت نتيجة ممتازة. استمر في هذا الأداء المتميز.';
-    }
-    if (score >= 80) {
-      return 'أداء جيد جداً! أنت على الطريق الصحيح. حاول المراجعة أكثر للوصول للامتياز.';
-    }
-    if (score >= 60) {
-      return 'أداء جيد، لكن يمكنك تحسينه. راجع المواد مرة أخرى وحاول حل المزيد من التمارين.';
-    }
-    return 'تحتاج لمزيد من المراجعة والتحضير. لا تيأس واستمر في المحاولة.';
+    if (score === null || score === undefined) return 'Your exam is currently being reviewed. Please check back later for your results.';
+    if (score >= 90) return 'Congratulations! Your performance was exceptional. Keep up the excellent work!';
+    if (score >= 80) return 'Well done! You demonstrated a strong understanding of the material. A little more focus can lead to even better results.';
+    if (score >= 60) return 'You passed! This is a good foundation. Review areas where you struggled to improve your score.';
+    return 'Don\'t be discouraged! This is an opportunity to learn and grow. Focus on understanding the core concepts and practice regularly.';
   }
 
   getImprovementTips(): string[] {
-    const score = this.examAttempt()?.score;
-
-    if (score === null || score === undefined) {
-      return [
-        'راجع إجاباتك مع المواد الدراسية',
-        'استعد للامتحانات القادمة بشكل أفضل',
-        'اطلب المساعدة من المدرسين عند الحاجة'
-      ];
-    }
-
-    if (score >= 90) {
-      return [
-        'حافظ على مستوى التحضير العالي',
-        'ساعد زملاءك في المراجعة',
-        'ركز على المواد الأخرى للحفاظ على التفوق'
-      ];
-    }
-
-    if (score >= 80) {
-      return [
-        'راجع الأجزاء التي أخطأت فيها',
-        'حل المزيد من الأسئلة التطبيقية',
-        'اطلب توضيحات إضافية للمفاهيم الصعبة'
-      ];
-    }
-
-    if (score >= 60) {
-      return [
-        'خصص وقتاً أكثر للمراجعة',
-        'اعمل على فهم المفاهيم الأساسية',
-        'حل أسئلة سابقة ومارس أكثر',
-        'انضم لمجموعات الدراسة'
-      ];
-    }
-
-    return [
-      'ابدأ بمراجعة شاملة للمنهج',
-      'اطلب مساعدة إضافية من المدرسين',
-      'خصص وقتاً يومياً للدراسة',
-      'ركز على فهم المفاهيم قبل الحفظ',
-      'حل أسئلة بسيطة أولاً ثم تدرج للصعب'
+    const tips = [
+      'Review your incorrect answers to understand mistakes.',
+      'Focus on understanding core concepts rather than memorizing.',
+      'Practice regularly with similar questions.',
+      'Identify your weak areas and dedicate more time to them.',
+      'Seek help from your instructors or peers if you are stuck.',
+      'Manage your time effectively during exams.',
+      'Read questions carefully before answering.',
+      'Get enough rest before exams to ensure optimal performance.'
     ];
-  }
-
-  canRetakeExam(): boolean {
-    // This would depend on the exam settings
-    // For now, we'll return false as most exams don't allow retakes
-    return false;
+    return tips;
   }
 
   goToDashboard(): void {
@@ -763,11 +716,27 @@ export class ExamResultComponent implements OnInit {
     this.router.navigate(['/results']);
   }
 
+  canRetakeExam(): boolean {
+    // Implement logic based on your application's rules
+    // For example, allow retake if score is below a certain threshold or if exam allows multiple attempts
+    const attempt = this.examAttempt();
+    return attempt?.score !== undefined && attempt.score !== null && attempt.score < 70; // Example: allow retake if score is less than 70
+  }
+
   retakeExam(): void {
-    const examId = this.examAttempt()?.exam_id;
-    if (examId) {
-      this.router.navigate(['/exam', examId, 'details']);
+    const examId = this.examAttempt()?.exam?.id;
+    if (examId && confirm('Are you sure you want to retake this exam?')) {
+      this.examService.startExam(examId).subscribe({
+        next: (attempt) => {
+          this.router.navigate(['/exam', examId, 'attempt', attempt.id]);
+        },
+        error: (error) => {
+          console.error('Error retaking exam:', error);
+          alert('An error occurred while trying to retake the exam. Please try again.');
+        }
+      });
     }
   }
 }
+
 

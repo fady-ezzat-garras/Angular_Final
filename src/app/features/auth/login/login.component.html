@@ -1,0 +1,82 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h1>Login</h1>
+      <p>Welcome to the Exam System</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <!-- Error Message -->
+      @if (errorMessage()) {
+        <div class="error-message">
+          <i class="error-icon">⚠️</i>
+          {{ errorMessage() }}
+        </div>
+      }
+
+      <!-- Email Field -->
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          placeholder="Enter your email"
+          [class.invalid]="isFieldInvalid('email')"
+          autocomplete="email"
+        />
+        @if (isFieldInvalid('email')) {
+          <div class="field-error">{{ getFieldError('email') }}</div>
+        }
+      </div>
+
+      <!-- Password Field -->
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="password-input-container">
+          <input
+            [type]="showPassword() ? 'text' : 'password'"
+            id="password"
+            formControlName="password"
+            placeholder="Enter your password"
+            [class.invalid]="isFieldInvalid('password')"
+            autocomplete="current-password"
+          />
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="togglePasswordVisibility()"
+            [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+          >
+            {{ showPassword() ? '🙈' : '👁️' }}
+          </button>
+        </div>
+        @if (isFieldInvalid('password')) {
+          <div class="field-error">{{ getFieldError('password') }}</div>
+        }
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="login-button"
+        [disabled]="isLoading() || loginForm.invalid"
+      >
+        @if (isLoading()) {
+          <span class="loading-spinner"></span>
+          Logging in...
+        } @else {
+          Login
+        }
+      </button>
+    </form>
+
+    <!-- Register Link -->
+    <div class="register-link">
+      <p>
+        Don't have an account?
+        <a routerLink="/auth/register" class="link">Create new account</a>
+      </p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,156 @@
+<div class="register-container">
+  <div class="register-card">
+    <div class="register-header">
+      <h1>Create New Account</h1>
+      <p>Join the Exam System</p>
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+      <!-- Error Message -->
+      @if (errorMessage()) {
+        <div class="error-message">
+          <i class="error-icon">⚠️</i>
+          {{ errorMessage() }}
+        </div>
+      }
+
+      <!-- Name Field -->
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input
+          type="text"
+          id="name"
+          formControlName="name"
+          placeholder="Enter your full name"
+          [class.invalid]="isFieldInvalid('name')"
+          autocomplete="name"
+        />
+        @if (isFieldInvalid('name')) {
+          <div class="field-error">{{ getFieldError('name') }}</div>
+        }
+      </div>
+
+      <!-- Username Field -->
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input
+          type="text"
+          id="username"
+          formControlName="username"
+          placeholder="Enter your username"
+          [class.invalid]="isFieldInvalid('username')"
+          autocomplete="username"
+        />
+        @if (isFieldInvalid('username')) {
+          <div class="field-error">{{ getFieldError('username') }}</div>
+        }
+      </div>
+
+      <!-- Email Field -->
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          placeholder="Enter your email"
+          [class.invalid]="isFieldInvalid('email')"
+          autocomplete="email"
+        />
+        @if (isFieldInvalid('email')) {
+          <div class="field-error">{{ getFieldError('email') }}</div>
+        }
+      </div>
+
+      <!-- Role Field -->
+      <div class="form-group">
+        <label for="role">User Type</label>
+        <select
+          id="role"
+          formControlName="role"
+          [class.invalid]="isFieldInvalid('role')"
+        >
+          <option value="student">Student</option>
+          <option value="admin">Admin</option>
+        </select>
+        @if (isFieldInvalid('role')) {
+          <div class="field-error">{{ getFieldError('role') }}</div>
+        }
+      </div>
+
+      <!-- Password Field -->
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="password-input-container">
+          <input
+            [type]="showPassword() ? 'text' : 'password'"
+            id="password"
+            formControlName="password"
+            placeholder="Enter your password"
+            [class.invalid]="isFieldInvalid('password')"
+            autocomplete="new-password"
+          />
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="togglePasswordVisibility()"
+            [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+          >
+            {{ showPassword() ? '🙈' : '👁️' }}
+          </button>
+        </div>
+        @if (isFieldInvalid('password')) {
+          <div class="field-error">{{ getFieldError('password') }}</div>
+        }
+      </div>
+
+      <!-- Confirm Password Field -->
+      <div class="form-group">
+        <label for="password_confirmation">Confirm Password</label>
+        <div class="password-input-container">
+          <input
+            [type]="showConfirmPassword() ? 'text' : 'password'"
+            id="password_confirmation"
+            formControlName="password_confirmation"
+            placeholder="Re-enter your password"
+            [class.invalid]="isFieldInvalid('password_confirmation')"
+            autocomplete="new-password"
+          />
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="toggleConfirmPasswordVisibility()"
+            [attr.aria-label]="showConfirmPassword() ? 'Hide password' : 'Show password'"
+          >
+            {{ showConfirmPassword() ? '🙈' : '👁️' }}
+          </button>
+        </div>
+        @if (isFieldInvalid('password_confirmation')) {
+          <div class="field-error">{{ getFieldError('password_confirmation') }}</div>
+        }
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="register-button"
+        [disabled]="isLoading() || registerForm.invalid"
+      >
+        @if (isLoading()) {
+          <span class="loading-spinner"></span>
+          Creating account...
+        } @else {
+          Create Account
+        }
+      </button>
+    </form>
+
+    <!-- Login Link -->
+    <div class="login-link">
+      <p>
+        Already have an account?
+        <a routerLink="/auth/login" class="link">Login</a>
+      </p>
+    </div>
+  </div>
+</div>

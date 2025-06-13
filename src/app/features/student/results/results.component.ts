@@ -14,15 +14,15 @@ import { ExamAttempt } from '../../../core/models/exam.models';
       <header class="page-header">
         <button (click)="goBack()" class="back-btn">
           <i class="icon">←</i>
-          العودة
+          Back
         </button>
-        <h1>جميع النتائج</h1>
+        <h1>All Results</h1>
       </header>
 
       <!-- Loading State -->
       <div class="loading-state" *ngIf="isLoading()">
         <div class="spinner"></div>
-        <p>جاري تحميل النتائج...</p>
+        <p>Loading results...</p>
       </div>
 
       <!-- Results Content -->
@@ -32,7 +32,7 @@ import { ExamAttempt } from '../../../core/models/exam.models';
           <div class="stat-card">
             <div class="stat-icon">📊</div>
             <div class="stat-info">
-              <h3>إجمالي الامتحانات</h3>
+              <h3>Total Exams</h3>
               <div class="stat-number">{{ totalAttempts() }}</div>
             </div>
           </div>
@@ -40,7 +40,7 @@ import { ExamAttempt } from '../../../core/models/exam.models';
           <div class="stat-card">
             <div class="stat-icon">✅</div>
             <div class="stat-info">
-              <h3>الامتحانات المكتملة</h3>
+              <h3>Completed Exams</h3>
               <div class="stat-number">{{ completedAttempts().length }}</div>
             </div>
           </div>
@@ -48,7 +48,7 @@ import { ExamAttempt } from '../../../core/models/exam.models';
           <div class="stat-card">
             <div class="stat-icon">📈</div>
             <div class="stat-info">
-              <h3>متوسط الدرجات</h3>
+              <h3>Average Score</h3>
               <div class="stat-number">{{ averageScore() }}%</div>
             </div>
           </div>
@@ -56,7 +56,7 @@ import { ExamAttempt } from '../../../core/models/exam.models';
           <div class="stat-card">
             <div class="stat-icon">🏆</div>
             <div class="stat-info">
-              <h3>أعلى درجة</h3>
+              <h3>Highest Score</h3>
               <div class="stat-number">{{ highestScore() }}%</div>
             </div>
           </div>
@@ -69,19 +69,19 @@ import { ExamAttempt } from '../../../core/models/exam.models';
               (click)="setFilter('all')"
               class="filter-btn"
               [ngClass]="{ 'active': currentFilter() === 'all' }">
-              جميع النتائج
+              All Results
             </button>
             <button
               (click)="setFilter('completed')"
               class="filter-btn"
               [ngClass]="{ 'active': currentFilter() === 'completed' }">
-              مكتملة
+              Completed
             </button>
             <button
               (click)="setFilter('pending')"
               class="filter-btn"
               [ngClass]="{ 'active': currentFilter() === 'pending' }">
-              معلقة
+              Pending
             </button>
           </div>
         </div>
@@ -97,28 +97,28 @@ import { ExamAttempt } from '../../../core/models/exam.models';
             <div class="result-body">
               <div class="result-info">
                 <div class="info-item">
-                  <span class="info-label">تاريخ البدء:</span>
+                  <span class="info-label">Start Date:</span>
                   <span class="info-value">{{ formatDate(attempt.started_at) }}</span>
                 </div>
                 <div class="info-item" *ngIf="attempt.submitted_at">
-                  <span class="info-label">تاريخ الانتهاء:</span>
+                  <span class="info-label">End Date:</span>
                   <span class="info-value">{{ formatDate(attempt.submitted_at) }}</span>
                 </div>
                 <div class="info-item">
-                  <span class="info-label">مدة الامتحان:</span>
+                  <span class="info-label">Duration:</span>
                   <span class="info-value">{{ calculateDuration(attempt) }}</span>
                 </div>
                 <div class="info-item">
-                  <span class="info-label">عدد الأسئلة:</span>
-                  <span class="info-value">{{ attempt.exam?.questions?.length || 0 }} سؤال</span>
+                  <span class="info-label">Number of Questions:</span>
+                  <span class="info-value">{{ attempt.exam?.questions?.length || 0 }} questions</span>
                 </div>
               </div>
 
               <div class="result-score">
-                         <div class="score-display" [ngClass]="getScoreClass(attempt.score || null)">
-              <span class="score-value" *ngIf="attempt.score !== null">{{ attempt.score }}%</span>
-              <span class="score-value pending" *ngIf="attempt.score === null">معلق</span>
-              <span class="score-status">{{ getScoreStatus(attempt.score || null) }}</span>an>
+                <div class="score-display" [ngClass]="getScoreClass(attempt.score || null)">
+                  <span class="score-value" *ngIf="attempt.score !== null">{{ attempt.score }}%</span>
+                  <span class="score-value pending" *ngIf="attempt.score === null">Pending</span>
+                  <span class="score-status">{{ getScoreStatus(attempt.score || null) }}</span>
                 </div>
 
                 <div class="score-visual" *ngIf="attempt.score !== null">
@@ -132,11 +132,11 @@ import { ExamAttempt } from '../../../core/models/exam.models';
             <div class="result-actions">
               <button (click)="viewResult(attempt)" class="action-btn view-btn">
                 <i class="icon">👁️</i>
-                عرض التفاصيل
+                View Details
               </button>
               <button (click)="retakeExam(attempt)" class="action-btn retake-btn" *ngIf="canRetakeExam(attempt)">
                 <i class="icon">🔄</i>
-                إعادة الامتحان
+                Retake Exam
               </button>
             </div>
           </div>
@@ -145,12 +145,12 @@ import { ExamAttempt } from '../../../core/models/exam.models';
         <ng-template #noResults>
           <div class="empty-state">
             <div class="empty-icon">📋</div>
-            <h3>لا توجد نتائج</h3>
-            <p *ngIf="currentFilter() === 'all'">لم تقم بأي امتحانات بعد</p>
-            <p *ngIf="currentFilter() === 'completed'">لا توجد امتحانات مكتملة</p>
-            <p *ngIf="currentFilter() === 'pending'">لا توجد امتحانات معلقة</p>
+            <h3>No Results</h3>
+            <p *ngIf="currentFilter() === 'all'">You haven't taken any exams yet</p>
+            <p *ngIf="currentFilter() === 'completed'">No completed exams</p>
+            <p *ngIf="currentFilter() === 'pending'">No pending exams</p>
             <button (click)="goToDashboard()" class="action-btn primary">
-              ابدأ امتحاناً جديداً
+              Start a New Exam
             </button>
           </div>
         </ng-template>
@@ -160,14 +160,13 @@ import { ExamAttempt } from '../../../core/models/exam.models';
   styles: [`
     .results-container {
       min-height: 100vh;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      direction: rtl;
+      background: linear-gradient(135deg, #f7fafc 0%, #e2e8f0 100%); /* Lighter background */
+      direction: ltr; /* Changed to LTR */
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     .page-header {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
+      background: white;
       padding: 20px;
       display: flex;
       align-items: center;
@@ -215,8 +214,7 @@ import { ExamAttempt } from '../../../core/models/exam.models';
     }
 
     .stat-card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
+      background: white;
       border-radius: 16px;
       padding: 25px;
       display: flex;
@@ -241,6 +239,7 @@ import { ExamAttempt } from '../../../core/models/exam.models';
       justify-content: center;
       background: linear-gradient(135deg, #667eea, #764ba2);
       border-radius: 12px;
+      color: white; /* Icons should be white on colored background */
     }
 
     .stat-info h3 {
@@ -257,8 +256,7 @@ import { ExamAttempt } from '../../../core/models/exam.models';
     }
 
     .filter-section {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
+      background: white;
       border-radius: 16px;
       padding: 20px;
       margin-bottom: 30px;
@@ -301,8 +299,7 @@ import { ExamAttempt } from '../../../core/models/exam.models';
     }
 
     .result-card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
+      background: white;
       border-radius: 16px;
       padding: 25px;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
@@ -478,8 +475,7 @@ import { ExamAttempt } from '../../../core/models/exam.models';
     .empty-state {
       text-align: center;
       padding: 80px 20px;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
+      background: white;
       border-radius: 16px;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
       border: 1px solid rgba(255, 255, 255, 0.2);
@@ -510,14 +506,14 @@ import { ExamAttempt } from '../../../core/models/exam.models';
       justify-content: center;
       min-height: 400px;
       text-align: center;
-      color: white;
+      color: #4a5568; /* Changed text color for lighter background */
     }
 
     .spinner {
       width: 50px;
       height: 50px;
-      border: 5px solid rgba(255, 255, 255, 0.3);
-      border-top: 5px solid white;
+      border: 5px solid #e2e8f0;
+      border-top: 5px solid #667eea;
       border-radius: 50%;
       animation: spin 1s linear infinite;
       margin-bottom: 20px;
@@ -543,11 +539,11 @@ import { ExamAttempt } from '../../../core/models/exam.models';
       }
 
       .result-score {
-        text-align: right;
+        text-align: left; /* Changed to left for LTR */
       }
 
       .result-actions {
-        justify-content: flex-start;
+        justify-content: flex-start; /* Changed to flex-start for LTR */
       }
 
       .filter-buttons {
@@ -600,9 +596,10 @@ export class ResultsComponent implements OnInit {
 
     switch (filter) {
       case 'completed':
-        return attempts.filter(attempt => attempt.score !== null);
+        return this.completedAttempts();
       case 'pending':
-        return attempts.filter(attempt => attempt.score === null);
+        return this.pendingAttempts();
+      case 'all':
       default:
         return attempts;
     }
@@ -613,13 +610,10 @@ export class ResultsComponent implements OnInit {
   }
 
   private loadResults(): void {
+    this.isLoading.set(true);
     this.examService.getResults().subscribe({
       next: (attempts) => {
-        // Sort by creation date, newest first
-        const sortedAttempts = attempts.sort((a, b) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-        );
-        this.examAttempts.set(sortedAttempts);
+        this.examAttempts.set(attempts);
         this.isLoading.set(false);
       },
       error: (error) => {
@@ -633,34 +627,29 @@ export class ResultsComponent implements OnInit {
     this.currentFilter.set(filter);
   }
 
-  calculateDuration(attempt: ExamAttempt): string {
-    if (!attempt.started_at || !attempt.submitted_at) {
-      return 'غير محدد';
-    }
-
-    const start = new Date(attempt.started_at);
-    const end = new Date(attempt.submitted_at);
-    const diffMs = end.getTime() - start.getTime();
-    const diffMins = Math.round(diffMs / (1000 * 60));
-
-    const hours = Math.floor(diffMins / 60);
-    const minutes = diffMins % 60;
-
-    if (hours > 0) {
-      return `${hours} ساعة و ${minutes} دقيقة`;
-    }
-    return `${minutes} دقيقة`;
-  }
-
-  formatDate(dateString: string): string {
+  formatDate(dateString: string | undefined): string {
+    if (!dateString) return 'N/A';
     const date = new Date(dateString);
-    return date.toLocaleDateString('ar-EG', {
+    return date.toLocaleDateString('en-US', {
       year: 'numeric',
-      month: 'short',
+      month: 'long',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
     });
+  }
+
+  calculateDuration(attempt: ExamAttempt): string {
+    if (!attempt.started_at || !attempt.submitted_at) return 'N/A';
+
+    const start = new Date(attempt.started_at).getTime();
+    const end = new Date(attempt.submitted_at).getTime();
+    const diffSeconds = Math.round((end - start) / 1000);
+
+    const minutes = Math.floor(diffSeconds / 60);
+    const seconds = diffSeconds % 60;
+
+    return `${minutes}m ${seconds}s`;
   }
 
   getScoreClass(score: number | null): string {
@@ -672,26 +661,35 @@ export class ResultsComponent implements OnInit {
   }
 
   getScoreStatus(score: number | null): string {
-    if (score === null) return 'معلق';
-    if (score >= 90) return 'ممتاز';
-    if (score >= 80) return 'جيد جداً';
-    if (score >= 60) return 'جيد';
-    return 'يحتاج تحسين';
-  }
-
-  canRetakeExam(attempt: ExamAttempt): boolean {
-    // For now, we'll return false as most exams don't allow retakes
-    // This could be based on exam settings in the future
-    return false;
+    if (score === null) return 'Pending';
+    if (score >= 90) return 'Excellent';
+    if (score >= 80) return 'Very Good';
+    if (score >= 60) return 'Good';
+    return 'Needs Improvement';
   }
 
   viewResult(attempt: ExamAttempt): void {
-    this.router.navigate(['/exam', 'result', attempt.id]);
+    if (attempt.id) {
+      this.router.navigate(['/exam/result', attempt.id]);
+    }
+  }
+
+  canRetakeExam(attempt: ExamAttempt): boolean {
+    // Example logic: allow retake if score is below 70 and exam is completed
+    return attempt.score !== null && attempt.score !== undefined && attempt.score < 70;
   }
 
   retakeExam(attempt: ExamAttempt): void {
-    if (attempt.exam_id) {
-      this.router.navigate(['/exam', attempt.exam_id, 'details']);
+    if (attempt.exam?.id && confirm(`Are you sure you want to retake "${attempt.exam.title}"?`)) {
+      this.examService.startExam(attempt.exam.id).subscribe({
+        next: (newAttempt) => {
+          this.router.navigate(['/exam', attempt.exam?.id, 'attempt', newAttempt.id]);
+        },
+        error: (error) => {
+          console.error('Error retaking exam:', error);
+          alert('An error occurred while trying to retake the exam. Please try again.');
+        }
+      });
     }
   }
 

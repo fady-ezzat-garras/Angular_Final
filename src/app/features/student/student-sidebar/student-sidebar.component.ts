@@ -14,12 +14,14 @@ import { AuthService } from '../../../core/services/auth.service';
       </div>
       <nav class="sidebar-nav">
         <ul>
+
           <li>
             <a routerLink="/dashboard" routerLinkActive="active">
               <i class="icon">🏠</i>
               <span>Dashboard</span>
             </a>
           </li>
+
           <li>
             <a routerLink="/results" routerLinkActive="active">
               <i class="icon">📊</i>
@@ -27,7 +29,9 @@ import { AuthService } from '../../../core/services/auth.service';
             </a>
           </li>
           <li>
-            <a (click)="logout()">
+
+
+          <a (click)="logout()">
               <i class="icon">🚪</i>
               <span>Logout</span>
             </a>

@@ -523,7 +523,7 @@ export class ExamDetailsComponent implements OnInit {
   readonly totalPoints = computed(() => {
     const examData = this.exam();
     if (!examData?.questions) return 0;
-    return examData.questions.reduce((total, question) => total + question.points, 0);
+    return examData.questions.reduce((total: number, question: any) => total + question.points, 0);
   });
 
   ngOnInit(): void {

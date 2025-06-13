@@ -4,12 +4,12 @@ import { Router } from '@angular/router';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { catchError, tap, map } from 'rxjs/operators';
 
-import { 
-  User, 
-  LoginRequest, 
-  RegisterRequest, 
-  AuthResponse, 
-  ApiResponse 
+import {
+  User,
+  LoginRequest,
+  RegisterRequest,
+  AuthResponse,
+  ApiResponse
 } from '../models/auth.models';
 
 @Injectable({
@@ -18,7 +18,7 @@ import {
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
-  
+
   private readonly API_BASE_URL = 'http://15.237.157.109:9090/api';
   private readonly TOKEN_KEY = 'exam_auth_token';
   private readonly USER_KEY = 'exam_user_data';
@@ -26,7 +26,7 @@ export class AuthService {
   // Signals for reactive state management
   private readonly currentUserSignal = signal<User | null>(null);
   private readonly isLoadingSignal = signal<boolean>(false);
-  
+
   // Computed signals
   readonly currentUser = this.currentUserSignal.asReadonly();
   readonly isLoading = this.isLoadingSignal.asReadonly();
@@ -44,7 +44,7 @@ export class AuthService {
   private initializeAuth(): void {
     const token = this.getStoredToken();
     const userData = this.getStoredUser();
-    
+
     if (token && userData) {
       this.currentUserSignal.set(userData);
     }
@@ -55,7 +55,7 @@ export class AuthService {
    */
   login(credentials: LoginRequest): Observable<AuthResponse> {
     this.isLoadingSignal.set(true);
-    
+
     return this.http.post<AuthResponse>(`${this.API_BASE_URL}/login`, credentials)
       .pipe(
         tap(response => {
@@ -71,7 +71,7 @@ export class AuthService {
    */
   register(userData: RegisterRequest): Observable<AuthResponse> {
     this.isLoadingSignal.set(true);
-    
+
     return this.http.post<AuthResponse>(`${this.API_BASE_URL}/register`, userData)
       .pipe(
         tap(response => {
@@ -149,11 +149,11 @@ export class AuthService {
    */
   private handleAuthError(error: HttpErrorResponse): Observable<never> {
     this.isLoadingSignal.set(false);
-    
+
     if (error.status === 401) {
       this.handleLogout();
     }
-    
+
     return throwError(() => error);
   }
 

@@ -992,4 +992,3 @@ export class ExamTakingComponent implements OnInit, OnDestroy {
   }
 }
 
-  

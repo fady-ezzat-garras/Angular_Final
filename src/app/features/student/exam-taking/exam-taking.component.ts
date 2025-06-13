@@ -15,7 +15,7 @@ import { Exam, Question, ExamAttempt, ExamAnswer } from '../../../core/models/ex
       <header class="exam-header">
         <div class="exam-info">
           <h1>{{ exam()?.title }}</h1>
-          <p>السؤال {{ currentQuestionIndex() + 1 }} من {{ totalQuestions() }}</p>
+          <p>Question {{ currentQuestionIndex() + 1 }} of {{ totalQuestions() }}</p>
         </div>
         <div class="timer" [ngClass]="getTimerClass()">
           <i class="icon">⏰</i>
@@ -28,15 +28,15 @@ import { Exam, Question, ExamAttempt, ExamAnswer } from '../../../core/models/ex
         <div class="progress-bar">
           <div class="progress-fill" [style.width.%]="progressPercentage()"></div>
         </div>
-        <span class="progress-text">{{ progressPercentage() }}% مكتمل</span>
+        <span class="progress-text">{{ progressPercentage() }}% Completed</span>
       </div>
 
       <!-- Question Content -->
       <main class="question-content" *ngIf="currentQuestion()">
         <div class="question-card">
           <div class="question-header">
-            <span class="question-number">السؤال {{ currentQuestionIndex() + 1 }}</span>
-            <span class="question-points">{{ currentQuestion()?.points }} نقطة</span>
+            <span class="question-number">Question {{ currentQuestionIndex() + 1 }}</span>
+            <span class="question-points">{{ currentQuestion()?.points }} points</span>
             <span class="question-type" [ngClass]="getQuestionTypeClass(currentQuestion()?.question_type || '')">
               {{ getQuestionTypeLabel(currentQuestion()?.question_type || '') }}
             </span>
@@ -75,8 +75,8 @@ import { Exam, Question, ExamAttempt, ExamAnswer } from '../../../core/models/ex
                   [value]="true"
                   [(ngModel)]="selectedTrueFalse"
                   (change)="onTrueFalseSelected(true)">
-                <span class="choice-letter">أ</span>
-                <span class="choice-text">صحيح</span>
+                <span class="choice-letter">A</span>
+                <span class="choice-text">True</span>
               </label>
               <label class="choice-option" [ngClass]="{ 'selected': selectedTrueFalse() === false }">
                 <input
@@ -85,8 +85,8 @@ import { Exam, Question, ExamAttempt, ExamAnswer } from '../../../core/models/ex
                   [value]="false"
                   [(ngModel)]="selectedTrueFalse"
                   (change)="onTrueFalseSelected(false)">
-                <span class="choice-letter">ب</span>
-                <span class="choice-text">خطأ</span>
+                <span class="choice-letter">B</span>
+                <span class="choice-text">False</span>
               </label>
             </div>
           </div>
@@ -97,11 +97,11 @@ import { Exam, Question, ExamAttempt, ExamAnswer } from '../../../core/models/ex
               <textarea
                 [(ngModel)]="essayAnswer"
                 (ngModelChange)="onEssayAnswerChanged($event)"
-                placeholder="اكتب إجابتك هنا..."
+                placeholder="Write your answer here..."
                 rows="8"
                 class="essay-textarea"></textarea>
               <div class="character-count">
-                عدد الأحرف: {{ essayAnswer().length }}
+                Characters: {{ essayAnswer().length }}
               </div>
             </div>
           </div>
@@ -114,7 +114,7 @@ import { Exam, Question, ExamAttempt, ExamAnswer } from '../../../core/models/ex
             class="nav-btn prev-btn"
             [disabled]="currentQuestionIndex() === 0">
             <i class="icon">←</i>
-            السؤال السابق
+            Previous Question
           </button>
 
           <button
@@ -122,7 +122,7 @@ import { Exam, Question, ExamAttempt, ExamAnswer } from '../../../core/models/ex
             class="nav-btn next-btn"
             [disabled]="!isCurrentQuestionAnswered()"
             *ngIf="!isLastQuestion()">
-            السؤال التالي
+            Next Question
             <i class="icon">→</i>
           </button>
 
@@ -133,13 +133,13 @@ import { Exam, Question, ExamAttempt, ExamAnswer } from '../../../core/models/ex
             *ngIf="isLastQuestion()">
             <div class="mini-spinner" *ngIf="isSubmitting()"></div>
             <i class="icon" *ngIf="!isSubmitting()">✓</i>
-            {{ isSubmitting() ? 'جاري الإرسال...' : 'إنهاء الامتحان' }}
+            {{ isSubmitting() ? 'Submitting...' : 'End Exam' }}
           </button>
         </div>
 
         <!-- Question Navigation -->
         <div class="question-navigation">
-          <h4>الانتقال السريع للأسئلة</h4>
+          <h4>Quick Question Navigation</h4>
           <div class="question-grid">
             <button
               *ngFor="let question of exam()?.questions; let i = index"
@@ -160,33 +160,33 @@ import { Exam, Question, ExamAttempt, ExamAnswer } from '../../../core/models/ex
       <div class="modal-overlay" *ngIf="showTimeWarning()">
         <div class="modal-content">
           <div class="warning-icon">⚠️</div>
-          <h3>تحذير: الوقت ينفد!</h3>
-          <p>تبقى أقل من 5 دقائق على انتهاء الامتحان</p>
-          <button (click)="dismissTimeWarning()" class="modal-btn">فهمت</button>
+          <h3>Warning: Time is running out!</h3>
+          <p>Less than 5 minutes remaining for the exam.</p>
+          <button (click)="dismissTimeWarning()" class="modal-btn">Understood</button>
         </div>
       </div>
 
       <!-- Submit Confirmation Modal -->
       <div class="modal-overlay" *ngIf="showSubmitConfirmation()">
         <div class="modal-content">
-          <h3>تأكيد إنهاء الامتحان</h3>
-          <p>هل أنت متأكد من إنهاء الامتحان؟</p>
+          <h3>Confirm Exam Submission</h3>
+          <p>Are you sure you want to end the exam?</p>
           <div class="unanswered-warning" *ngIf="unansweredQuestions().length > 0">
             <p class="warning-text">
-              لديك {{ unansweredQuestions().length }} أسئلة غير مجابة:
+              You have {{ unansweredQuestions().length }} unanswered questions:
             </p>
             <ul class="unanswered-list">
               <li *ngFor="let questionNum of unansweredQuestions()">
-                السؤال {{ questionNum }}
+                Question {{ questionNum }}
               </li>
             </ul>
           </div>
           <div class="modal-actions">
             <button (click)="confirmSubmit()" class="modal-btn confirm-btn">
-              نعم، إنهاء الامتحان
+              Yes, End Exam
             </button>
             <button (click)="cancelSubmit()" class="modal-btn cancel-btn">
-              إلغاء
+              Cancel
             </button>
           </div>
         </div>
@@ -196,14 +196,13 @@ import { Exam, Question, ExamAttempt, ExamAnswer } from '../../../core/models/ex
   styles: [`
     .exam-taking-container {
       min-height: 100vh;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      direction: rtl;
+      background: linear-gradient(135deg, #f7fafc 0%, #e2e8f0 100%); /* Lighter background */
+      direction: ltr; /* Changed to LTR */
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     .exam-header {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
+      background: white;
       padding: 20px;
       display: flex;
       justify-content: space-between;
@@ -261,11 +260,12 @@ import { Exam, Question, ExamAttempt, ExamAnswer } from '../../../core/models/ex
     }
 
     .progress-container {
-      background: rgba(255, 255, 255, 0.9);
+      background: white;
       padding: 15px 20px;
       display: flex;
       align-items: center;
       gap: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
 
     .progress-bar {
@@ -296,8 +296,7 @@ import { Exam, Question, ExamAttempt, ExamAnswer } from '../../../core/models/ex
     }
 
     .question-card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
+      background: white;
       border-radius: 16px;
       padding: 30px;
       margin-bottom: 30px;
@@ -450,7 +449,7 @@ import { Exam, Question, ExamAttempt, ExamAnswer } from '../../../core/models/ex
     .character-count {
       position: absolute;
       bottom: 10px;
-      left: 15px;
+      right: 15px; /* Changed to right for LTR */
       color: #718096;
       font-size: 0.8rem;
       background: rgba(255, 255, 255, 0.9);
@@ -507,8 +506,7 @@ import { Exam, Question, ExamAttempt, ExamAnswer } from '../../../core/models/ex
     }
 
     .question-navigation {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
+      background: white;
       border-radius: 16px;
       padding: 25px;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
@@ -596,74 +594,69 @@ import { Exam, Question, ExamAttempt, ExamAnswer } from '../../../core/models/ex
     }
 
     .modal-content p {
-      margin: 0 0 20px 0;
+      margin-bottom: 20px;
       color: #4a5568;
-      line-height: 1.5;
-    }
-
-    .unanswered-warning {
-      background: #fff5f5;
-      border: 1px solid #fed7d7;
-      border-radius: 8px;
-      padding: 15px;
-      margin: 15px 0;
-      text-align: right;
-    }
-
-    .warning-text {
-      color: #c53030;
-      font-weight: 600;
-      margin-bottom: 10px;
-    }
-
-    .unanswered-list {
-      margin: 0;
-      padding-right: 20px;
-      color: #e53e3e;
     }
 
     .modal-actions {
       display: flex;
-      gap: 10px;
       justify-content: center;
+      gap: 15px;
     }
 
     .modal-btn {
       padding: 10px 20px;
       border: none;
       border-radius: 8px;
-      font-weight: 600;
       cursor: pointer;
+      font-weight: 600;
       transition: all 0.3s ease;
     }
 
-    .confirm-btn {
-      background: linear-gradient(135deg, #48bb78, #38a169);
-      color: white;
-    }
-
-    .cancel-btn {
+    .modal-btn.confirm-btn {
       background: linear-gradient(135deg, #e53e3e, #c53030);
       color: white;
     }
 
+    .modal-btn.cancel-btn {
+      background: #e2e8f0;
+      color: #4a5568;
+    }
+
     .modal-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
 
-    .mini-spinner {
-      width: 20px;
-      height: 20px;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      border-top: 2px solid white;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
+    .unanswered-warning {
+      background: #fff3e0;
+      border: 1px solid #ff9800;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
     }
 
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+    .unanswered-warning .warning-text {
+      color: #e65100;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .unanswered-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .unanswered-list li {
+      background: #ff9800;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 0.9rem;
     }
 
     .icon {
@@ -674,17 +667,6 @@ import { Exam, Question, ExamAttempt, ExamAnswer } from '../../../core/models/ex
       .exam-header {
         flex-direction: column;
         gap: 15px;
-        text-align: center;
-      }
-
-      .progress-container {
-        flex-direction: column;
-        gap: 10px;
-      }
-
-      .question-header {
-        flex-direction: column;
-        align-items: flex-start;
       }
 
       .navigation-buttons {
@@ -694,15 +676,6 @@ import { Exam, Question, ExamAttempt, ExamAnswer } from '../../../core/models/ex
       .nav-btn {
         width: 100%;
       }
-
-      .question-grid {
-        grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
-      }
-
-      .question-nav-btn {
-        width: 40px;
-        height: 40px;
-      }
     }
   `]
 })
@@ -711,253 +684,103 @@ export class ExamTakingComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
-  // Signals for reactive state
   readonly exam = signal<Exam | null>(null);
-  readonly examAttempt = signal<ExamAttempt | null>(null);
   readonly currentQuestionIndex = signal(0);
   readonly timeRemaining = signal(0);
+  readonly selectedChoiceId = signal<number | null>(null);
+  readonly selectedTrueFalse = signal<boolean | null>(null);
+  readonly essayAnswer = signal<string>('');
+  readonly answers = signal<ExamAnswer[]>([]);
+  readonly isLoading = signal(true);
   readonly isSubmitting = signal(false);
   readonly showTimeWarning = signal(false);
   readonly showSubmitConfirmation = signal(false);
 
-  // Answer signals
-  readonly selectedChoiceId = signal<number | null>(null);
-  readonly selectedTrueFalse = signal<boolean | null>(null);
-  readonly essayAnswer = signal('');
-
-  // Answers storage
-  private answers = new Map<number, ExamAnswer>();
-  private timer: any;
-  private timeWarningShown = false;
-
-  // Computed signals
-  readonly currentQuestion = computed(() => {
-    const examData = this.exam();
-    const index = this.currentQuestionIndex();
-    return examData?.questions?.[index] || null;
-  });
+  private timerInterval: any;
+  private examAttemptId: number | null = null;
 
   readonly totalQuestions = computed(() => this.exam()?.questions?.length || 0);
-
   readonly progressPercentage = computed(() => {
     const total = this.totalQuestions();
-    const current = this.currentQuestionIndex() + 1;
-    return total > 0 ? Math.round((current / total) * 100) : 0;
+    if (total === 0) return 0;
+    return ((this.currentQuestionIndex() + 1) / total) * 100;
   });
 
-  readonly isLastQuestion = computed(() =>
-    this.currentQuestionIndex() === this.totalQuestions() - 1
-  );
+  readonly isLastQuestion = computed(() => this.currentQuestionIndex() === this.totalQuestions() - 1);
 
   readonly unansweredQuestions = computed(() => {
-    const total = this.totalQuestions();
+    const questions = this.exam()?.questions || [];
+    const answeredQuestionIds = new Set(this.answers().map(ans => ans.question_id));
     const unanswered: number[] = [];
-
-    for (let i = 0; i < total; i++) {
-      if (!this.isQuestionAnswered(i)) {
-        unanswered.push(i + 1);
+    questions.forEach((q, index) => {
+      if (!answeredQuestionIds.has(q.id)) {
+        unanswered.push(index + 1);
       }
-    }
-
+    });
     return unanswered;
   });
 
   ngOnInit(): void {
     const examId = Number(this.route.snapshot.paramMap.get('examId'));
-    const attemptId = Number(this.route.snapshot.paramMap.get('attemptId'));
+    this.examAttemptId = Number(this.route.snapshot.paramMap.get('attemptId'));
 
-    if (examId && attemptId) {
-      this.loadExamData(examId, attemptId);
+    if (examId && this.examAttemptId) {
+      this.loadExam(examId);
     } else {
       this.router.navigate(['/dashboard']);
     }
   }
 
   ngOnDestroy(): void {
-    if (this.timer) {
-      clearInterval(this.timer);
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
     }
   }
 
-  private loadExamData(examId: number, attemptId: number): void {
+  private loadExam(examId: number): void {
     this.examService.getExam(examId).subscribe({
       next: (exam) => {
         this.exam.set(exam);
-        this.initializeTimer(exam.duration);
-        this.loadCurrentAnswers();
+        this.timeRemaining.set(exam.duration * 60); // Convert minutes to seconds
+        this.isLoading.set(false);
+        this.startTimer();
+        this.loadExistingAnswers();
       },
       error: (error) => {
         console.error('Error loading exam:', error);
+        alert('Failed to load exam. Please try again.');
         this.router.navigate(['/dashboard']);
+        this.isLoading.set(false);
       }
     });
   }
 
-  private initializeTimer(durationMinutes: number): void {
-    const totalSeconds = durationMinutes * 60;
-    this.timeRemaining.set(totalSeconds);
+  private loadExistingAnswers(): void {
+    if (this.examAttemptId) {
+      this.examService.getAttemptDetails(this.examAttemptId).subscribe({
+        next: (attempt) => {
+          if (attempt.answers) {
+            this.answers.set(attempt.answers);
+            this.updateCurrentQuestionAnswer();
+          }
+        },
+        error: (error) => {
+          console.error('Error loading existing answers:', error);
+        }
+      });
+    }
+  }
 
-    this.timer = setInterval(() => {
-      const remaining = this.timeRemaining() - 1;
-      this.timeRemaining.set(remaining);
-
-      // Show warning at 5 minutes
-      if (remaining === 300 && !this.timeWarningShown) {
+  private startTimer(): void {
+    this.timerInterval = setInterval(() => {
+      this.timeRemaining.update(val => val - 1);
+      if (this.timeRemaining() <= 300 && !this.showTimeWarning()) { // 5 minutes warning
         this.showTimeWarning.set(true);
-        this.timeWarningShown = true;
       }
-
-      // Auto-submit when time runs out
-      if (remaining <= 0) {
-        this.autoSubmitExam();
+      if (this.timeRemaining() <= 0) {
+        this.submitExam(true); // Auto-submit
       }
     }, 1000);
-  }
-
-  private loadCurrentAnswers(): void {
-    // Load any existing answers for this question
-    this.updateCurrentAnswerDisplay();
-  }
-
-  private updateCurrentAnswerDisplay(): void {
-    const question = this.currentQuestion();
-    if (!question) return;
-
-    const answer = this.answers.get(question.id);
-    if (answer) {
-      if (question.question_type === 'multiple_choice') {
-        this.selectedChoiceId.set(answer.selected_choice_id || null);
-      } else if (question.question_type === 'true_false') {
-        this.selectedTrueFalse.set(answer.selected_choice_id === 1 ? true : false);
-      } else if (question.question_type === 'essay') {
-        this.essayAnswer.set(answer.answer_text || '');
-      }
-    } else {
-      // Reset form for new question
-      this.selectedChoiceId.set(null);
-      this.selectedTrueFalse.set(null);
-      this.essayAnswer.set('');
-    }
-  }
-
-  onChoiceSelected(choiceId: number): void {
-    const question = this.currentQuestion();
-    if (!question) return;
-
-    this.answers.set(question.id, {
-      question_id: question.id,
-      selected_choice_id: choiceId
-    });
-  }
-
-  onTrueFalseSelected(value: boolean): void {
-    const question = this.currentQuestion();
-    if (!question) return;
-
-    this.answers.set(question.id, {
-      question_id: question.id,
-      selected_choice_id: value ? 1 : 0
-    });
-  }
-
-  onEssayAnswerChanged(text: string): void {
-    const question = this.currentQuestion();
-    if (!question) return;
-
-    this.answers.set(question.id, {
-      question_id: question.id,
-      answer_text: text
-    });
-  }
-
-  isCurrentQuestionAnswered(): boolean {
-    const question = this.currentQuestion();
-    if (!question) return false;
-
-    return this.answers.has(question.id);
-  }
-
-  isQuestionAnswered(index: number): boolean {
-    const examData = this.exam();
-    if (!examData?.questions) return false;
-
-    const question = examData.questions[index];
-    return this.answers.has(question.id);
-  }
-
-  canSubmitExam(): boolean {
-    // Allow submission even with unanswered questions
-    return true;
-  }
-
-  nextQuestion(): void {
-    if (this.currentQuestionIndex() < this.totalQuestions() - 1) {
-      this.currentQuestionIndex.set(this.currentQuestionIndex() + 1);
-      this.updateCurrentAnswerDisplay();
-    }
-  }
-
-  previousQuestion(): void {
-    if (this.currentQuestionIndex() > 0) {
-      this.currentQuestionIndex.set(this.currentQuestionIndex() - 1);
-      this.updateCurrentAnswerDisplay();
-    }
-  }
-
-  goToQuestion(index: number): void {
-    if (index >= 0 && index < this.totalQuestions()) {
-      this.currentQuestionIndex.set(index);
-      this.updateCurrentAnswerDisplay();
-    }
-  }
-
-  submitExam(): void {
-    this.showSubmitConfirmation.set(true);
-  }
-
-  confirmSubmit(): void {
-    this.showSubmitConfirmation.set(false);
-    this.performSubmit();
-  }
-
-  cancelSubmit(): void {
-    this.showSubmitConfirmation.set(false);
-  }
-
-  private performSubmit(): void {
-    const attemptId = Number(this.route.snapshot.paramMap.get('attemptId'));
-    if (!attemptId) return;
-
-    this.isSubmitting.set(true);
-
-    const answersArray = Array.from(this.answers.values());
-
-    this.examService.submitExamAttempt(attemptId, answersArray).subscribe({
-      next: (result) => {
-        if (this.timer) {
-          clearInterval(this.timer);
-        }
-        this.router.navigate(['/exam', 'result', result.id]);
-      },
-      error: (error) => {
-        console.error('Error submitting exam:', error);
-        alert('حدث خطأ أثناء إرسال الامتحان. يرجى المحاولة مرة أخرى.');
-        this.isSubmitting.set(false);
-      }
-    });
-  }
-
-  private autoSubmitExam(): void {
-    if (this.timer) {
-      clearInterval(this.timer);
-    }
-
-    alert('انتهى الوقت المحدد للامتحان. سيتم إرسال إجاباتك تلقائياً.');
-    this.performSubmit();
-  }
-
-  dismissTimeWarning(): void {
-    this.showTimeWarning.set(false);
   }
 
   formatTime(seconds: number): string {
@@ -968,16 +791,179 @@ export class ExamTakingComponent implements OnInit, OnDestroy {
 
   getTimerClass(): string {
     const remaining = this.timeRemaining();
-    if (remaining <= 300) return 'critical'; // 5 minutes
-    if (remaining <= 600) return 'warning';  // 10 minutes
+    if (remaining <= 60) return 'critical'; // 1 minute
+    if (remaining <= 300) return 'warning'; // 5 minutes
     return 'normal';
+  }
+
+  goToQuestion(index: number): void {
+    this.saveCurrentAnswer();
+    this.currentQuestionIndex.set(index);
+    this.updateCurrentQuestionAnswer();
+  }
+
+  previousQuestion(): void {
+    if (this.currentQuestionIndex() > 0) {
+      this.saveCurrentAnswer();
+      this.currentQuestionIndex.update(val => val - 1);
+      this.updateCurrentQuestionAnswer();
+    }
+  }
+
+  nextQuestion(): void {
+    if (this.currentQuestionIndex() < this.totalQuestions() - 1) {
+      this.saveCurrentAnswer();
+      this.currentQuestionIndex.update(val => val + 1);
+      this.updateCurrentQuestionAnswer();
+    }
+  }
+
+  private saveCurrentAnswer(): void {
+    const currentQ = this.currentQuestion();
+    if (!currentQ || !this.examAttemptId) return;
+
+    let answerValue: any = null;
+    if (currentQ.question_type === 'multiple_choice') {
+      answerValue = this.selectedChoiceId();
+    } else if (currentQ.question_type === 'true_false') {
+      answerValue = this.selectedTrueFalse();
+    } else if (currentQ.question_type === 'essay') {
+      answerValue = this.essayAnswer();
+    }
+
+    if (answerValue !== null && answerValue !== '') {
+      const existingAnswerIndex = this.answers().findIndex(ans => ans.question_id === currentQ.id);
+      const newAnswer: ExamAnswer = {
+        question_id: currentQ.id,
+        answer_value: answerValue
+      };
+
+      if (existingAnswerIndex > -1) {
+        this.answers.update(answers => {
+          const updatedAnswers = [...answers];
+          updatedAnswers[existingAnswerIndex] = newAnswer;
+          return updatedAnswers;
+        });
+      } else {
+        this.answers.update(answers => [...answers, newAnswer]);
+      }
+
+      // Auto-save to backend
+      this.examService.saveAnswer(this.examAttemptId, newAnswer).subscribe({
+        next: (response) => {
+          // console.log('Answer saved:', response);
+        },
+        error: (error) => {
+          console.error('Error saving answer:', error);
+        }
+      });
+    }
+  }
+
+  private updateCurrentQuestionAnswer(): void {
+    const currentQ = this.currentQuestion();
+    if (!currentQ) return;
+
+    const existingAnswer = this.answers().find(ans => ans.question_id === currentQ.id);
+
+    if (currentQ.question_type === 'multiple_choice') {
+      this.selectedChoiceId.set(existingAnswer?.answer_value || null);
+      this.selectedTrueFalse.set(null);
+      this.essayAnswer.set('');
+    } else if (currentQ.question_type === 'true_false') {
+      this.selectedTrueFalse.set(existingAnswer?.answer_value === 'true' ? true : (existingAnswer?.answer_value === 'false' ? false : null));
+      this.selectedChoiceId.set(null);
+      this.essayAnswer.set('');
+    } else if (currentQ.question_type === 'essay') {
+      this.essayAnswer.set(existingAnswer?.answer_value || '');
+      this.selectedChoiceId.set(null);
+      this.selectedTrueFalse.set(null);
+    }
+  }
+
+  onChoiceSelected(choiceId: number): void {
+    this.selectedChoiceId.set(choiceId);
+  }
+
+  onTrueFalseSelected(value: boolean): void {
+    this.selectedTrueFalse.set(value);
+  }
+
+  onEssayAnswerChanged(value: string): void {
+    this.essayAnswer.set(value);
+  }
+
+  currentQuestion = computed(() => {
+    const examData = this.exam();
+    const index = this.currentQuestionIndex();
+    return examData?.questions ? examData.questions[index] : null;
+  });
+
+  isCurrentQuestionAnswered(): boolean {
+    const currentQ = this.currentQuestion();
+    if (!currentQ) return false;
+
+    const existingAnswer = this.answers().find(ans => ans.question_id === currentQ.id);
+    return !!existingAnswer && existingAnswer.answer_value !== null && existingAnswer.answer_value !== '';
+  }
+
+  isQuestionAnswered(index: number): boolean {
+    const question = this.exam()?.questions?.[index];
+    if (!question) return false;
+    const existingAnswer = this.answers().find(ans => ans.question_id === question.id);
+    return !!existingAnswer && existingAnswer.answer_value !== null && existingAnswer.answer_value !== '';
+  }
+
+  canSubmitExam(): boolean {
+    return this.unansweredQuestions().length === 0;
+  }
+
+  submitExam(autoSubmit: boolean = false): void {
+    this.saveCurrentAnswer(); // Save the last question's answer
+
+    if (!autoSubmit && this.unansweredQuestions().length > 0) {
+      this.showSubmitConfirmation.set(true);
+      return;
+    }
+
+    if (confirm(autoSubmit ? 'Time is up! Submitting your exam.' : 'Are you sure you want to submit the exam?')) {
+      this.confirmSubmit();
+    }
+  }
+
+  confirmSubmit(): void {
+    if (!this.examAttemptId) return;
+
+    this.isSubmitting.set(true);
+    this.showSubmitConfirmation.set(false);
+    clearInterval(this.timerInterval);
+
+    this.examService.submitExam(this.examAttemptId, this.answers()).subscribe({
+      next: (result) => {
+        alert('Exam submitted successfully!');
+        this.router.navigate(['/exam/result', this.examAttemptId]);
+      },
+      error: (error) => {
+        console.error('Error submitting exam:', error);
+        alert('An error occurred while submitting the exam. Please try again.');
+        this.isSubmitting.set(false);
+      }
+    });
+  }
+
+  cancelSubmit(): void {
+    this.showSubmitConfirmation.set(false);
+  }
+
+  dismissTimeWarning(): void {
+    this.showTimeWarning.set(false);
   }
 
   getQuestionTypeLabel(type: string): string {
     switch (type) {
-      case 'multiple_choice': return 'اختيار متعدد';
-      case 'true_false': return 'صح أم خطأ';
-      case 'essay': return 'مقالي';
+      case 'multiple_choice': return 'Multiple Choice';
+      case 'true_false': return 'True/False';
+      case 'essay': return 'Essay';
       default: return type;
     }
   }
@@ -987,7 +973,7 @@ export class ExamTakingComponent implements OnInit, OnDestroy {
   }
 
   getChoiceLetter(index: number): string {
-    const letters = ['أ', 'ب', 'ج', 'د', 'هـ', 'و', 'ز', 'ح'];
+    const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
     return letters[index] || String(index + 1);
   }
 }

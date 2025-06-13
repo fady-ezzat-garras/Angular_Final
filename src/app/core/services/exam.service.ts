@@ -1,66 +1,12 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
+import { Exam, ExamAttempt, ExamAnswer, StartExamResponse } from '../models/exam.models';
 
 export interface ApiResponse<T> {
   data?: T;
   message?: string;
   status?: string;
-}
-
-export interface Exam {
-  id: number;
-  title: string;
-  description?: string;
-  duration: number; // in minutes
-  questions_count?: number;
-  created_at: string;
-  updated_at: string;
-  questions?: Question[];
-}
-
-export interface Question {
-  id: number;
-  exam_id: number;
-  question_text: string;
-  question_type: 'multiple_choice' | 'true_false' | 'essay';
-  points: number;
-  created_at: string;
-  updated_at: string;
-  choices?: Choice[];
-}
-
-export interface Choice {
-  id: number;
-  question_id: number;
-  choice_text: string;
-  is_correct: boolean;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface ExamAttempt {
-  id: number;
-  exam_id: number;
-  user_id: number;
-  started_at: string;
-  submitted_at?: string;
-  score?: number;
-  answers?: ExamAnswer[];
-  created_at: string;
-  updated_at: string;
-  exam?: Exam;
-}
-
-export interface ExamAnswer {
-  question_id: number;
-  selected_choice_id?: number;
-  answer_text?: string;
-}
-
-export interface StartExamResponse {
-  exam_attempt: ExamAttempt;
-  exam: Exam;
 }
 
 @Injectable({
@@ -101,14 +47,41 @@ export class ExamService {
   }
 
   /**
-   * Submit answers for an exam attempt
+   * Save a single answer during exam
    */
-  submitExamAttempt(attemptId: number, answers: ExamAnswer[]): Observable<ExamAttempt> {
+  saveAnswer(attemptId: number, answer: ExamAnswer): Observable<any> {
+    return this.http.post<ApiResponse<any>>(`${this.API_BASE_URL}/attempts/${attemptId}/answer`, answer)
+      .pipe(
+        map(response => response.data)
+      );
+  }
+
+  /**
+   * Submit exam with all answers
+   */
+  submitExam(attemptId: number, answers: ExamAnswer[]): Observable<ExamAttempt> {
     return this.http.post<ApiResponse<ExamAttempt>>(`${this.API_BASE_URL}/attempts/${attemptId}/submit`, {
       answers: answers
     }).pipe(
       map(response => response.data!)
     );
+  }
+
+  /**
+   * Get attempt details
+   */
+  getAttemptDetails(attemptId: number): Observable<ExamAttempt> {
+    return this.http.get<ApiResponse<ExamAttempt>>(`${this.API_BASE_URL}/attempts/${attemptId}`)
+      .pipe(
+        map(response => response.data!)
+      );
+  }
+
+  /**
+   * Submit answers for an exam attempt (legacy method)
+   */
+  submitExamAttempt(attemptId: number, answers: ExamAnswer[]): Observable<ExamAttempt> {
+    return this.submitExam(attemptId, answers);
   }
 
   /**

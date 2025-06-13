@@ -1,135 +1,3 @@
-/*import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { AuthService } from '../../../core/services/auth.service';
-
-@Component({
-  selector: 'app-dashboard',
-  standalone: true,
-  imports: [CommonModule],
-  template: `
-    <div class="dashboard-container">
-      <header class="dashboard-header">
-        <h1>Student Dashboard</h1>
-        <div class="user-info">
-          <span>Welcome, {{ authService.currentUser()?.name }}</span>
-          <button (click)="logout()" class="logout-btn">Logout</button>
-        </div>
-      </header>
-
-      <main class="dashboard-content">
-        <div class="welcome-card">
-          <h2>Welcome to the Exam System</h2>
-          <p>From here you can access all available exams</p>
-        </div>
-
-        <div class="stats-grid">
-          <div class="stat-card">
-            <h3>Available Exams</h3>
-            <div class="stat-number">5</div>
-          </div>
-
-          <div class="stat-card">
-            <h3>Completed Exams</h3>
-            <div class="stat-number">2</div>
-          </div>
-
-          <div class="stat-card">
-            <h3>Results</h3>
-            <div class="stat-number">85%</div>
-          </div>
-        </div>
-      </main>
-    </div>
-  `,
-  styles: [`
-    .dashboard-container {
-      min-height: 100vh;
-      background: #f7fafc;
-      direction: ltr;
-    }
-
-    .dashboard-header {
-      background: white;
-      padding: 20px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .dashboard-header h1 {
-      margin: 0;
-      color: #2d3748;
-    }
-
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .logout-btn {
-      background: #e53e3e;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .dashboard-content {
-      padding: 30px;
-    }
-
-    .welcome-card {
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      margin-bottom: 30px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-    }
-
-    .stat-card {
-      background: white;
-      padding: 25px;
-      border-radius: 12px;
-      text-align: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    .stat-number {
-      font-size: 2.5rem;
-      font-weight: bold;
-      color: #667eea;
-      margin-top: 10px;
-    }
-  `]
-})
-export class DashboardComponent {
-  readonly authService = inject(AuthService);
-  private readonly router = inject(Router);
-
-  logout(): void {
-    this.authService.logout().subscribe({
-      next: () => {
-        this.router.navigate(['/auth/login']);
-      },
-      error: () => {
-        // Force logout even if API call fails
-        this.authService.forceLogout();
-      }
-    });
-  }
-}
-*/
-
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -143,26 +11,6 @@ import { Exam, ExamAttempt } from '../../../core/models/exam.models';
   imports: [CommonModule],
   template: `
     <div class="dashboard-container">
-      <!-- Header -->
-      <header class="dashboard-header">
-        <div class="header-content">
-          <div class="header-left">
-            <h1>لوحة تحكم الطالب</h1>
-            <p class="header-subtitle">مرحباً بك في نظام الامتحانات</p>
-          </div>
-          <div class="user-info">
-            <div class="user-details">
-              <span class="user-name">{{ authService.currentUser()?.name }}</span>
-              <span class="user-role">طالب</span>
-            </div>
-            <button (click)="logout()" class="logout-btn">
-              <i class="icon">🚪</i>
-              تسجيل الخروج
-            </button>
-          </div>
-        </div>
-      </header>
-
       <!-- Main Content -->
       <main class="dashboard-content">
         <!-- Statistics Cards -->
@@ -171,36 +19,36 @@ import { Exam, ExamAttempt } from '../../../core/models/exam.models';
             <div class="stat-card available-exams">
               <div class="stat-icon">📝</div>
               <div class="stat-info">
-                <h3>الامتحانات المتاحة</h3>
+                <h3>Available Exams</h3>
                 <div class="stat-number">{{ availableExams().length }}</div>
-                <p class="stat-description">امتحان جديد في انتظارك</p>
+                <p class="stat-description">New exams waiting for you</p>
               </div>
             </div>
 
             <div class="stat-card completed-exams">
               <div class="stat-icon">✅</div>
               <div class="stat-info">
-                <h3>الامتحانات المكتملة</h3>
+                <h3>Completed Exams</h3>
                 <div class="stat-number">{{ completedAttempts().length }}</div>
-                <p class="stat-description">امتحان مكتمل</p>
+                <p class="stat-description">Exams completed</p>
               </div>
             </div>
 
             <div class="stat-card average-score">
               <div class="stat-icon">📊</div>
               <div class="stat-info">
-                <h3>متوسط الدرجات</h3>
+                <h3>Average Score</h3>
                 <div class="stat-number">{{ averageScore() }}%</div>
-                <p class="stat-description">من إجمالي الامتحانات</p>
+                <p class="stat-description">Overall average</p>
               </div>
             </div>
 
             <div class="stat-card pending-results">
               <div class="stat-icon">⏳</div>
               <div class="stat-info">
-                <h3>نتائج معلقة</h3>
+                <h3>Pending Results</h3>
                 <div class="stat-number">{{ pendingResults() }}</div>
-                <p class="stat-description">في انتظار التصحيح</p>
+                <p class="stat-description">Awaiting grading</p>
               </div>
             </div>
           </div>
@@ -209,10 +57,10 @@ import { Exam, ExamAttempt } from '../../../core/models/exam.models';
         <!-- Available Exams Section -->
         <div class="section">
           <div class="section-header">
-            <h2>الامتحانات المتاحة</h2>
+            <h2>Available Exams</h2>
             <button (click)="refreshExams()" class="refresh-btn" [disabled]="isLoading()">
               <i class="icon">🔄</i>
-              تحديث
+              Refresh
             </button>
           </div>
 
@@ -220,18 +68,18 @@ import { Exam, ExamAttempt } from '../../../core/models/exam.models';
             <div class="exam-card" *ngFor="let exam of availableExams()">
               <div class="exam-header">
                 <h3>{{ exam.title }}</h3>
-                <span class="exam-duration">{{ exam.duration }} دقيقة</span>
+                <span class="exam-duration">{{ exam.duration }} minutes</span>
               </div>
               <div class="exam-body">
-                <p class="exam-description">{{ exam.description || 'لا يوجد وصف متاح' }}</p>
+                <p class="exam-description">{{ exam.description || 'No description available' }}</p>
                 <div class="exam-meta">
                   <span class="question-count">
                     <i class="icon">❓</i>
-                    {{ exam.questions_count || 0 }} سؤال
+                    {{ exam.questions_count || 0 }} questions
                   </span>
                   <span class="exam-type">
                     <i class="icon">📋</i>
-                    امتحان عام
+                    General Exam
                   </span>
                 </div>
               </div>
@@ -240,12 +88,12 @@ import { Exam, ExamAttempt } from '../../../core/models/exam.models';
                   (click)="startExam(exam)"
                   class="start-exam-btn"
                   [disabled]="isLoading()">
-                  بدء الامتحان
+                  Start Exam
                 </button>
                 <button
                   (click)="viewExamDetails(exam)"
                   class="view-details-btn">
-                  عرض التفاصيل
+                  View Details
                 </button>
               </div>
             </div>
@@ -254,8 +102,8 @@ import { Exam, ExamAttempt } from '../../../core/models/exam.models';
           <ng-template #noExams>
             <div class="empty-state">
               <div class="empty-icon">📚</div>
-              <h3>لا توجد امتحانات متاحة حالياً</h3>
-              <p>سيتم إضافة امتحانات جديدة قريباً</p>
+              <h3>No Exams Available</h3>
+              <p>New exams will be added soon</p>
             </div>
           </ng-template>
         </div>
@@ -263,9 +111,9 @@ import { Exam, ExamAttempt } from '../../../core/models/exam.models';
         <!-- Recent Results Section -->
         <div class="section">
           <div class="section-header">
-            <h2>النتائج الأخيرة</h2>
+            <h2>Recent Results</h2>
             <button (click)="viewAllResults()" class="view-all-btn">
-              عرض الكل
+              View All
             </button>
           </div>
 
@@ -276,7 +124,7 @@ import { Exam, ExamAttempt } from '../../../core/models/exam.models';
                 <p class="result-date">{{ formatDate(attempt.created_at) }}</p>
               </div>
               <div class="result-score" [ngClass]="getScoreClass(attempt.score || null)">
-                <span class="score-value">{{ attempt.score || 'معلق' }}%</span>
+                <span class="score-value">{{ attempt.score || 'Pending' }}%</span>
                 <span class="score-status">{{ getScoreStatus(attempt.score || null) }}</span>
               </div>
             </div>
@@ -285,8 +133,8 @@ import { Exam, ExamAttempt } from '../../../core/models/exam.models';
           <ng-template #noResults>
             <div class="empty-state">
               <div class="empty-icon">📈</div>
-              <h3>لا توجد نتائج بعد</h3>
-              <p>ابدأ أول امتحان لك لرؤية النتائج هنا</p>
+              <h3>No Results Yet</h3>
+              <p>Start your first exam to see results here</p>
             </div>
           </ng-template>
         </div>
@@ -296,7 +144,7 @@ import { Exam, ExamAttempt } from '../../../core/models/exam.models';
       <div class="loading-overlay" *ngIf="isLoading()">
         <div class="loading-spinner">
           <div class="spinner"></div>
-          <p>جاري التحميل...</p>
+          <p>Loading...</p>
         </div>
       </div>
     </div>
@@ -304,82 +152,12 @@ import { Exam, ExamAttempt } from '../../../core/models/exam.models';
   styles: [`
     .dashboard-container {
       min-height: 100vh;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      direction: rtl;
+      background: linear-gradient(135deg, #f7fafc 0%, #e2e8f0 100%); /* Lighter background */
+      direction: ltr; /* Changed to LTR */
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    .dashboard-header {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .header-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .header-left h1 {
-      margin: 0;
-      color: #2d3748;
-      font-size: 1.8rem;
-      font-weight: 700;
-    }
-
-    .header-subtitle {
-      margin: 5px 0 0 0;
-      color: #718096;
-      font-size: 0.9rem;
-    }
-
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .user-details {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-    }
-
-    .user-name {
-      font-weight: 600;
-      color: #2d3748;
-    }
-
-    .user-role {
-      font-size: 0.8rem;
-      color: #718096;
-    }
-
-    .logout-btn {
-      background: linear-gradient(135deg, #e53e3e, #c53030);
-      color: white;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: 500;
-      transition: all 0.3s ease;
-    }
-
-    .logout-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(229, 62, 62, 0.3);
-    }
+    /* Removed dashboard-header styles as it's now in app.component.ts */
 
     .dashboard-content {
       max-width: 1200px;
@@ -398,8 +176,7 @@ import { Exam, ExamAttempt } from '../../../core/models/exam.models';
     }
 
     .stat-card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
+      background: white;
       padding: 25px;
       border-radius: 16px;
       display: flex;
@@ -423,6 +200,7 @@ import { Exam, ExamAttempt } from '../../../core/models/exam.models';
       align-items: center;
       justify-content: center;
       border-radius: 12px;
+      color: white; /* Icons should be white on colored background */
     }
 
     .available-exams .stat-icon { background: linear-gradient(135deg, #4299e1, #3182ce); }
@@ -451,8 +229,7 @@ import { Exam, ExamAttempt } from '../../../core/models/exam.models';
     }
 
     .section {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
+      background: white;
       border-radius: 16px;
       padding: 30px;
       margin-bottom: 30px;
@@ -814,7 +591,7 @@ export class DashboardComponent implements OnInit {
   }
 
   startExam(exam: Exam): void {
-    if (confirm(`هل أنت متأكد من بدء امتحان "${exam.title}"؟`)) {
+    if (confirm(`Are you sure you want to start the exam "${exam.title}"?`)) {
       this.isLoading.set(true);
 
       this.examService.startExam(exam.id).subscribe({
@@ -823,7 +600,7 @@ export class DashboardComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error starting exam:', error);
-          alert('حدث خطأ أثناء بدء الامتحان. يرجى المحاولة مرة أخرى.');
+          alert('An error occurred while starting the exam. Please try again.');
           this.isLoading.set(false);
         }
       });
@@ -840,7 +617,7 @@ export class DashboardComponent implements OnInit {
 
   formatDate(dateString: string): string {
     const date = new Date(dateString);
-    return date.toLocaleDateString('ar-EG', {
+    return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -858,11 +635,11 @@ export class DashboardComponent implements OnInit {
   }
 
   getScoreStatus(score: number | null): string {
-    if (score === null) return 'معلق';
-    if (score >= 90) return 'ممتاز';
-    if (score >= 80) return 'جيد جداً';
-    if (score >= 60) return 'جيد';
-    return 'يحتاج تحسين';
+    if (score === null) return 'Pending';
+    if (score >= 90) return 'Excellent';
+    if (score >= 80) return 'Very Good';
+    if (score >= 60) return 'Good';
+    return 'Needs Improvement';
   }
 
   logout(): void {
@@ -877,5 +654,4 @@ export class DashboardComponent implements OnInit {
     });
   }
 }
-
 
